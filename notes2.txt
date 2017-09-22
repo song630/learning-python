@@ -1,0 +1,33 @@
+1.__str__方法：
+  把一个类的实例变成字符串。
+  返回一个标准输出格式。
+  print(这个对象)时自动调用
+  __repr__()用于显示给开发人员。
+  
+2.运算符重载：
+  class Number:   
+    def __init__(self, start):   
+        self.data = start   
+    def __sub__(self, other): #minus method   
+        return Number(self.data - other)
+  __add__、__or__、__sub_同时也自动定义了复合赋值运算符的重载？
+  
+3.__len__长度
+
+4.__cmp__、__lt__、__eq__比较
+
+5.__getitem__：对应X[i]索引运算
+  def __getitem__(self, index): 
+        return self.data[index]
+		
+6.__getattr__
+  如果属性查找（attribute lookup）在实例以及对应的类中（通过__dict__)失败，
+  那么会调用到类的__getattr__函数。
+  def __getattr__(self, name):
+        value =  self[name]
+        if isinstance(value, dict):
+            value = ObjectDict(value)
+        return value
+  点号运算。如x.age, x.name
+  
+7.__setattr__
