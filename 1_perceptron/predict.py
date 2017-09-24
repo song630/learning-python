@@ -2,7 +2,7 @@ from Perceptron import Perceptron
 import sys
 
 
-def active_fun(value):  # define an activation function
+def step_fun(value):  # define an activation function
     return 1 if value > 0 else 0
 
 if __name__ == '__main__':
@@ -25,7 +25,7 @@ if __name__ == '__main__':
         sys.exit()
     # input done.
 
-    P = Perceptron(n_inputs, num_training, active_fun)
+    P = Perceptron(n_inputs, num_training, step_fun)
     P.training(vectors, labels)
     print('Results: ')
     print(P)
