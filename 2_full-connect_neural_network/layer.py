@@ -15,8 +15,8 @@ class Layer:
         """
         self.nodes = [Node(self.layer_index, i) for i in node_indexes]
         # sort nodes[] according to their node_index:
-        cmp = operator.attrgetter('node_index')
-        self.nodes.sort(key=cmp)
+        # ===== cmp function not supported in Python 3 =====
+        sorted(self.nodes, key=lambda x: x.node_index)
 
     def calc_outputs(self):
         """

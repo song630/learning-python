@@ -1,6 +1,7 @@
-from connection import *
+# from connection import Connection
 import sys
 import math
+import random
 
 
 def sigmoid(x):
@@ -16,24 +17,22 @@ class Node:
         self.delta = 0.0  # measure the error
         self.inputs = []  # record objects of Node
         self.output = 0.0
-        self.bias = 0.0  # b
+        self.bias = random.uniform(-0.1, 0.1)  # b  # ===== ? =====
 
     def __str__(self):
-        return 'delta = {}, output = {}'.format(delta, output)
+        return 'node_index = {}, delta = {:.5f}, output = {:.5f}, ' \
+               'bias = {:.5f}'.format(self.node_index, self.delta, self.output, self.bias)
 
     def __repr__(self):
         return self.__str__()
 
+    def __cmp__(self, other):
+        return cmp(self.node_index, other.node_index)
+
     def add_upstream_connection(self, connection):  # append an object to 'input_connections[]'
-        if connection in self.input_connections:
-            print('connection {} is already in list.'.format(connection))
-            sys.exit()
         self.input_connections.append(connection)
 
     def add_downstream_connection(self, connection):  # append an object to 'output_connections[]'
-        if connection in self.output_connections:
-            print('connection {} is already in list.'.format(connection))
-            sys.exit()
         self.output_connections.append(connection)
 
     def fill_inputs(self):
@@ -48,7 +47,8 @@ class Node:
         if self.layer_index == 0:
             print('this node is at the input layer.')
             return
-        temp = sum(map(lambda x: x[0].weight + x[1], zip(self.input_connections, self.inputs))) + bias
+        # ===== error: x[0].weight + x[1] =====
+        temp = sum(map(lambda x: x[0].weight * x[1].output, zip(self.input_connections, self.inputs))) + self.bias
         self.output = sigmoid(temp)
 
     def set_output(self, x):
@@ -61,10 +61,13 @@ class Node:
     # ===== add layer_index check later =====
     def calc_delta_output_layer(self, label):  # label: the target value
         # compute 'output' first
-        if not self.output_connections:  # output_connections != []: not output layer
+        # ===== error: if len(output_connections): =====
+        # ===== error: if output_connections: =====
+        if not self.output_connections:  # the list is empty
+            self.delta = self.output * (1.0 - self.output) * (label - self.output)
+        else:  # output_connections != []: not output layer
             print('this is not the output layer.')
             sys.exit()
-        self.delta = self.output * (1.0 - self.output) * (label - self.output)
 
     # ===== add layer_index check later =====
     def calc_delta_hidden_layer(self):
@@ -75,6 +78,10 @@ class Node:
             sys.exit()
         res = sum(map(lambda x: x.weight * x.down_node.delta, self.output_connections))
         self.delta = self.output * (1 - self.output) * res
+        #  print('index = {}, delta = {:.5f}'.format(self.node_index, self.delta))
 
     def update_bias(self, rate):
+        if self.layer_index == 0:  # at the input layer
+            print('cannot update bias of a node at input layer')
+            sys.exit()
         self.bias += rate * self.delta

@@ -5,10 +5,9 @@ class Connections:
     def __init__(self):
         self.connections = []
 
-    def add_connections(self, connection):  # connection is a list
-        for i in connection:
-            if i not in self.connections:
-                self.connections.append(i)
+    def add_connection(self, connection):  # connection is a list
+        if connection not in self.connections:
+            self.connections.append(connection)
 
     def __str__(self):
         for i in self.connections:
