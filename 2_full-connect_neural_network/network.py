@@ -28,6 +28,7 @@ class Network:
             # ===== error: forget to fill inputs of nodes: =====
             for m in self.layers[i].nodes:
                 m.fill_inputs()
+            print('a layer has been built.')
         self.n_layers = len(layers)
         self.trained = False
 
@@ -63,6 +64,7 @@ class Network:
                         n.update_weights(self.n_layers, rate)  # update weights of connections between levels
                         n.update_bias(rate)  # hidden layer: update bias
             iterations -= 1
+            print('one iteration finished.')
         self.trained = True
 
     # ================================
